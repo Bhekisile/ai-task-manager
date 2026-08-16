@@ -18,7 +18,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_131058) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name"
-    t.string "status"
+    t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
   end
 
