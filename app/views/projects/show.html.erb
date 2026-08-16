@@ -1,0 +1,40 @@
+<h1><%= @project.name %></h1>
+
+<hr>
+
+<p>
+  <strong>Description:</strong><br>
+  <%= @project.description.presence || "No description provided." %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @project.status.capitalize %>
+</p>
+
+<hr>
+
+<%= link_to "← Back to Projects", projects_path %><br>
+
+<%= link_to "Edit Project", edit_project_path(@project) %><br>
+
+<%= link_to "Delete Project",
+            @project,
+            data: {
+              turbo_method: :delete,
+              turbo_confirm: "Are you sure?"
+            } %>
+
+<br>
+
+<%= link_to "Add Task", new_project_task_path(@project) %><br>
+
+<h2>Tasks</h2>
+
+<ul>
+  <% @project.tasks.each do |task| %>
+    <li>
+      <%= task.title %>
+    </li>
+  <% end %>
+</ul>

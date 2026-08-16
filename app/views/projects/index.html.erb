@@ -1,0 +1,20 @@
+<h1>Projects</h1>
+
+<ul>
+  <% @projects.each do |project| %>
+
+    <li>
+      <%= link_to project.name, project %>
+
+      <p><%= project.description %></p>
+
+      <p>Status: <%= project.status %></p>
+    </li>
+
+    <p>
+      Tasks:
+      <%= project.tasks.count %>
+    </p>
+
+  <% end %>
+</ul>
