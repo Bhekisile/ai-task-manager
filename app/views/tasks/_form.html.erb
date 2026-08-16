@@ -1,0 +1,60 @@
+<% if @task.errors.any? %>
+  <div>
+    <h2>
+      <%= pluralize(@task.errors.count, "error") %>
+      prevented this task from being saved:
+    </h2>
+
+    <ul>
+      <% @task.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: [@project, @task] do |form| %>
+  <div>
+    <%= form.label :title %><br>
+    <%= form.text_field :title %>
+  </div><br>
+
+  <div>
+    <%= form.label :description %><br>
+    <%= form.text_area :description %>
+  </div> 
+
+  <br>
+
+  <div>
+    <%= form.label :due_date %><br>
+    <%= form.datetime_local_field :due_date %>
+  </div>
+
+  <br>
+
+  <div>
+    <%= form.label :estimated_minutes %><br>
+    <%= form.text_field :estimated_minutes %>
+  </div>
+
+  <br>
+
+  <div>
+    <%= form.label :priority %><br>
+    <%= form.select :priority, Task.priorities.keys.map { |priority| [priority.humanize, priority] } %>
+  </div>
+
+  <br>
+
+  <div>
+    <%= form.label :status %><br>
+    <%= form.select :status, Task.statuses.keys.map { |status| [status.humanize, status] } %>
+  </div>
+
+  <br>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
