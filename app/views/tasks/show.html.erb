@@ -1,0 +1,30 @@
+<h1><%= @task.title %></h1>
+
+<hr>
+
+<p>
+  <strong>Description:</strong><br>
+  <%= @task.description.presence || "No description provided." %>
+</p>
+
+<p>
+  <strong>Due Date:</strong><br>
+  <%= @task.due_date %>
+</p>
+
+<p>
+  <strong>Estimated minutes:</strong><br>
+  <%= @task.estimated_minutes %>
+</p>
+
+<p>
+  <strong>Priority:</strong>
+  <%= @task.priority.humanize %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @task.status.humanize %>
+</p>
+
+<hr>

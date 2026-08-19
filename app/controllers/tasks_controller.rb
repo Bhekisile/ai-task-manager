@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
-  before_action :set_project
+  before_action :set_project, only: [:new, :create, :show, :edit, :update]
+  before_action :set_task, only: [:show, :edit, :update]
 
   def new
     @task = @project.tasks.new
@@ -15,10 +16,25 @@ class TasksController < ApplicationController
     end
   end
 
+  def show
+  end
+
+  def update
+    if @task.update(task_params)
+      redirect_to [@project, @task], notice: "Task updated successfully"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_project
     @project = Project.find(params[:project_id])
+  end
+
+  def set_task
+    @task = @project.tasks.find(params[:id])
   end
 
   def task_params
