@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
-  before_action :set_project, only: [:new, :create, :show, :edit, :update]
-  before_action :set_task, only: [:show, :edit, :update]
+  before_action :set_project, only: [:new, :create, :show, :edit, :update, :destroy]
+  before_action :set_task, only: [:show, :edit, :update, :destroy]
 
   def new
     @task = @project.tasks.new
@@ -25,6 +25,11 @@ class TasksController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @task.destroy
+    redirect_to @project, notice: "Task was successfully deleted"
   end
 
   private

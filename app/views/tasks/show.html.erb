@@ -28,3 +28,8 @@
 </p>
 
 <hr>
+
+<%= button_to "Delete Task",
+              [@project, @task],
+              method: :delete,
+              data: { turbo_confirm: "Are you sure?" } %>
