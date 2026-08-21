@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
-  before_action :set_project, only: [:new, :create, :show, :edit, :update, :destroy]
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :set_project, only: [:new, :create, :show, :edit, :update, :destroy, :complete]
+  before_action :set_task, only: [:show, :edit, :update, :destroy, :complete]
 
   def new
     @task = @project.tasks.new
@@ -30,6 +30,11 @@ class TasksController < ApplicationController
   def destroy
     @task.destroy
     redirect_to @project, notice: "Task was successfully deleted"
+  end
+
+  def complete
+    @task.done!
+    redirect_to [@project, @task]
   end
 
   private

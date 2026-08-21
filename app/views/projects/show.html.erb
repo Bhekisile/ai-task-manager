@@ -38,3 +38,20 @@
     </li>
   <% end %>
 </ul>
+
+<br>
+
+<p>
+  <strong>Tasks:</strong>
+  <%= @project.total_tasks_count %>
+</p>
+
+<p>
+  <strong>Completed:</strong>
+  <%= @project.completed_tasks_count %>
+</p>
+
+<p>
+  <strong>Completion:</strong>
+  <%= @project.completion_percentage %>%
+</p>

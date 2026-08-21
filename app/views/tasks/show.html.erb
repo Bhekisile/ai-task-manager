@@ -27,9 +27,22 @@
   <%= @task.status.humanize %>
 </p>
 
+<br>
+
+<% unless @task.done? %>
+
+  <%= button_to "Mark as completed",
+                complete_project_task_path(@project, @task),
+                method: :patch %>
+<% else %>
+  ✓ Completed
+<% end %>
+
 <hr>
 
 <%= button_to "Delete Task",
               [@project, @task],
               method: :delete,
               data: { turbo_confirm: "Are you sure?" } %>
+
+
