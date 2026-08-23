@@ -3,7 +3,7 @@
 <hr>
 
 <p>
-  <strong>Description:</strong><br>
+  <strong>Description:</strong>
   <%= @project.description.presence || "No description provided." %>
 </p>
 
@@ -11,6 +11,58 @@
   <strong>Status:</strong>
   <%= @project.status.capitalize %>
 </p>
+
+<br>
+
+<%= link_to "Add Task", new_project_task_path(@project) %><br>
+
+<h2>Tasks</h2>
+<hr>
+
+<ul>
+  <% @project.tasks.each do |task| %>
+    <li>
+      <%= task.title %>
+    </li>
+  <% end %>
+</ul>
+
+<br>
+
+<h2>Tasks Progress</h2>
+<hr>
+
+<p>
+  <strong>Total:</strong>
+  <%= @project.total_tasks_count %>
+</p>
+
+<p>
+  <strong>Completed:</strong>
+  <%= @project.completed_tasks_count %>
+</p>
+
+<p>
+  <strong>Remaining:</strong>
+  <%= @project.remaining_tasks_count %>
+</p>
+
+<p>
+  <strong>Completion:</strong>
+  <%= @project.completion_percentage %>%
+</p>
+
+<h2>Recent Incomplete Tasks</h2>
+<hr>
+
+<ul>
+    <% @project.recent_incomplete_tasks.each do |task| %>
+      <li>
+        <%= task.status %>
+        <%= task.title %>
+      </li>
+    <% end %>
+</ul>
 
 <hr>
 
@@ -24,34 +76,3 @@
               turbo_method: :delete,
               turbo_confirm: "Are you sure?"
             } %>
-
-<br>
-
-<%= link_to "Add Task", new_project_task_path(@project) %><br>
-
-<h2>Tasks</h2>
-
-<ul>
-  <% @project.tasks.each do |task| %>
-    <li>
-      <%= task.title %>
-    </li>
-  <% end %>
-</ul>
-
-<br>
-
-<p>
-  <strong>Tasks:</strong>
-  <%= @project.total_tasks_count %>
-</p>
-
-<p>
-  <strong>Completed:</strong>
-  <%= @project.completed_tasks_count %>
-</p>
-
-<p>
-  <strong>Completion:</strong>
-  <%= @project.completion_percentage %>%
-</p>
