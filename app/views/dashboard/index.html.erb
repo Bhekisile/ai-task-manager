@@ -1,0 +1,32 @@
+<h1>Dashboard</h1>
+<hr>
+
+<p>
+  <strong>Total tasks:</strong>
+  <%= @statistics[:total] %>
+</p><br>
+
+<p>
+  <strong>Completed tasks:</strong>
+  <%= @statistics[:completed] %>
+</p><br>
+
+<p>
+  <strong>Remaining tasks:</strong>
+  <%= @statistics[:remaining] %>
+</p><br>
+
+<p>
+  <strong>Completion percentage:</strong>
+  <%= @statistics[:percentage] %>%
+</p><br>
+
+<hr>
+<h2>The 5 most recent tasks:</h2>
+<ul>
+  <% current_user.recent_tasks.each do |task| %>
+    <li>
+      <strong><%= task.title %></strong> — <%= task.status %>
+    </li>
+  <% end %>
+</ul>
