@@ -7,6 +7,11 @@ class User < ApplicationRecord
   has_many  :projects, dependent: :destroy
   has_many :tasks, through: :projects
 
+  enum :role, {
+    member: 0,
+    admin: 1
+  }
+
   # def completed_tasks_count
   #   tasks.completed.count
   #   # @completed_tasks_count ||= tasks.completed.count
