@@ -1,5 +1,7 @@
-class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
+class ProjectsController < 
+  before_action :set_project, only: [:show, :edit, :update]
+  before_action :require_admin, only: [:destroy]
+  before_action :set_project_for_admin, only: [:destroy]
 
   def index
     @projects = current_user.projects
@@ -52,5 +54,9 @@ class ProjectsController < ApplicationController
 
   def set_project
     @project = current_user.projects.find(params[:id])
+  end
+
+  def set_project_for_admin
+    @project = Project.find(params[:id])
   end
 end

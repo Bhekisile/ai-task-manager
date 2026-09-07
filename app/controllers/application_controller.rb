@@ -6,4 +6,12 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  private
+
+  def require_admin
+    unless current_user.admin?
+      redirect_to projects_path, notice: "You do not have permission to delete this project"
+    end
+  end
 end
