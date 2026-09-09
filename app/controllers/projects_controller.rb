@@ -1,7 +1,6 @@
-class ProjectsController < 
-  before_action :set_project, only: [:show, :edit, :update]
-  before_action :require_admin, only: [:destroy]
-  before_action :set_project_for_admin, only: [:destroy]
+class ProjectsController < ApplicationController
+  before_action :set_project, only: [:show, :edit, :update, :destroy]
+  # before_action :set_project_for_admin, only: [:destroy]
 
   def index
     @projects = current_user.projects
@@ -37,6 +36,7 @@ class ProjectsController <
   end
 
   def destroy
+    authorize @project, :destroy?
     @project.destroy
 
     redirect_to projects_path,
@@ -56,7 +56,7 @@ class ProjectsController <
     @project = current_user.projects.find(params[:id])
   end
 
-  def set_project_for_admin
-    @project = Project.find(params[:id])
-  end
+  # def set_project_for_admin
+  #   @project = Project.find(params[:id])
+  # end
 end
