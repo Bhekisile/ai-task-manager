@@ -3,7 +3,8 @@ class ProjectsController < ApplicationController
   # before_action :set_project_for_admin, only: [:destroy]
 
   def index
-    @projects = current_user.projects
+    @projects = policy_scope(Project)
+    # @projects = current_user.projects
   end
 
   def new

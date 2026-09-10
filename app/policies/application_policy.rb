@@ -33,7 +33,7 @@ class ApplicationPolicy
   end
 
   def destroy?
-    false
+    user.admin?
   end
 
   class Scope
@@ -43,7 +43,11 @@ class ApplicationPolicy
     end
 
     def resolve
-      raise NoMethodError, "You must define #resolve in #{self.class}"
+      if user.admin?
+        scope
+      else
+        scope.where(user: user)
+      end
     end
 
     private
