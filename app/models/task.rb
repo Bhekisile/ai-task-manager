@@ -1,5 +1,5 @@
 class Task < ApplicationRecord
-  belongs_to :project
+  belongs_to :project, counter_cache: true
 
   enum :priority, {
     low: 0,
