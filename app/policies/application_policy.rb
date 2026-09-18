@@ -12,10 +12,6 @@ class ApplicationPolicy
     false
   end
 
-  def show?
-    user.admin? || record.user == user
-  end
-
   def create?
     true
   end
@@ -24,30 +20,14 @@ class ApplicationPolicy
     create?
   end
 
-  def update?
-    user.admin? || record.user == user
-  end
-
   def edit?
     update?
-  end
-
-  def destroy?
-    user.admin?
   end
 
   class Scope
     def initialize(user, scope)
       @user = user
       @scope = scope
-    end
-
-    def resolve
-      if user.admin?
-        scope
-      else
-        scope.where(user: user)
-      end
     end
 
     private
