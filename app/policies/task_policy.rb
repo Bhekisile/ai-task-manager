@@ -12,6 +12,7 @@ class TaskPolicy < ApplicationPolicy
   end
 
   def complete?
+    user.admin? || record.project.user == user
   end
 
   class Scope < Scope
@@ -20,6 +21,7 @@ class TaskPolicy < ApplicationPolicy
         scope
       else
         user.tasks
+      end
     end
   end
 end
