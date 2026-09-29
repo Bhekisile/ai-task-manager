@@ -40,13 +40,16 @@ class TasksController < ApplicationController
 
   def complete
     authorize @task
-    if @task.done?
+
+    completed = CompleteTask.call(@task)
+
+    if completed
+      redirect_to [@project, @task],
+                  notice: "Task was completed successfully"
+    else
       redirect_to [@project, @task],
                   alert: "Task is already completed."
-      return
     end
-    @task.done!
-    redirect_to [@project, @task]
   end
 
   private
