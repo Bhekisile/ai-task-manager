@@ -14,7 +14,7 @@ class ProjectPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if user.admin?
-        scope
+        scope.all
       else
         scope.where(user: user)
       end

@@ -18,7 +18,7 @@ class TaskPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if user.admin?
-        scope
+        scope.all
       else
         user.tasks
       end
