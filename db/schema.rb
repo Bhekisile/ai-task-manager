@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_29_033653) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_30_035646) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,6 +20,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_29_033653) do
     t.bigint "task_id", null: false
     t.datetime "updated_at", null: false
     t.index ["task_id"], name: "index_activity_logs_on_task_id"
+  end
+
+  create_table "notification_deliveries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "notification_type"
+    t.datetime "sent_at"
+    t.bigint "task_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id", "notification_type"], name: "index_notification_deliveries_on_task_id_and_notification_type", unique: true
+    t.index ["task_id"], name: "index_notification_deliveries_on_task_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -62,6 +72,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_29_033653) do
   end
 
   add_foreign_key "activity_logs", "tasks"
+  add_foreign_key "notification_deliveries", "tasks"
   add_foreign_key "projects", "users"
   add_foreign_key "tasks", "projects"
 end

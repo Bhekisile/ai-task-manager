@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  task: one
+  notification_type: MyString
+  sent_at: 2026-09-30 05:56:46
+
+two:
+  task: two
+  notification_type: MyString
+  sent_at: 2026-09-30 05:56:46
