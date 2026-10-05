@@ -13,10 +13,18 @@ class SendTaskCompletedNotificationJob < ApplicationJob
 
     # Simulate application failure AFTER notification was sent
     # raise "💥 Application crashed after notification was sent"
-    NotificationDelivery.create!(
-      task: task,
-      notification_type: "task_completed",
-      sent_at: Time.current
+    idempotency_key = "task-#{task.id}-task_completed"
+
+    result = FakeNotificationProvider.send_notification(
+      idempotency_key: idempotency_key
     )
+
+    if [:sent, :already_processed].include?(result)
+      NotificationDelivery.create!(
+        task: task,
+        notification_type: "task_completed",
+        sent_at: Time.current
+      )
+    end
   end
 end
