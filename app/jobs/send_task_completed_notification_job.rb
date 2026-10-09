@@ -6,14 +6,18 @@ class SendTaskCompletedNotificationJob < ApplicationJob
   def perform(task_id)
     task = Task.find(task_id)
 
-    return if NotificationDelivery.sent_for?(task, "task_completed")
+    notification_type = "task_completed"
 
-    # Simulate sending the notification
-    Rails.logger.info "📧 NOTIFICATION SENT for Task ##{task.id}"
+    return if NotificationDelivery.sent_for?(task, notification_type)
+
+    # if NotificationDelivery.sent_for?(task, notification_type)
+    #   Rails.logger.info "📧 NOTIFICATION SENT for Task ##{task.id}"
+    #   return
+    # end
 
     # Simulate application failure AFTER notification was sent
     # raise "💥 Application crashed after notification was sent"
-    idempotency_key = "task-#{task.id}-task_completed"
+    idempotency_key = "task-#{task.id}-#{notification_type}"
 
     result = FakeNotificationProvider.send_notification(
       idempotency_key: idempotency_key
@@ -22,7 +26,7 @@ class SendTaskCompletedNotificationJob < ApplicationJob
     if [:sent, :already_processed].include?(result)
       NotificationDelivery.create!(
         task: task,
-        notification_type: "task_completed",
+        notification_type: notification_type,
         sent_at: Time.current
       )
     end

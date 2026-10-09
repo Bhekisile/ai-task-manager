@@ -8,19 +8,27 @@ class CompleteTask
   end
 
   def call
-    return false if @task.done?
+    completed = false
 
     ActiveRecord::Base.transaction do
-      @task.done!
+      @task.lock!
 
-      ActivityLog.create!(
-        task: @task,
-        action: "completed"
-      )
+      if @task.todo?
+        @task.update!(status: :done)
+
+        ActivityLog.create!(
+          task: @task,
+          action: "completed"
+        )
+
+        completed = true
+      end
     end
 
-    SendTaskCompletedNotificationJob.perform_later(@task.id)
+    if completed
+      SendTaskCompletedNotificationJob.perform_later(@task.id)
+    end
 
-    true
+    completed
   end
 end
