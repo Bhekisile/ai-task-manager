@@ -23,6 +23,10 @@ class TasksController < ApplicationController
     authorize @task
   end
 
+  def edit
+    authorize @task
+  end
+
   def update
     authorize @task
     if @task.update(task_params)
@@ -30,6 +34,24 @@ class TasksController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  rescue ActiveRecord::StaleObjectError
+    submitted_changes =
+      task_params.to_h.except("lock_version")
+
+    @task.reload
+
+    @submitted_task_changes = submitted_changes.select do |attribute, value|
+      type = @task.class.type_for_attribute(attribute)
+      submitted_value = type.cast(value)
+
+      submitted_value != @task.public_send(attribute)
+    end
+
+    flash.now[:alert] =
+      "This task was updated by someone else. " \
+      "Please review the latest version before saving."
+
+    render :edit, status: :conflict
   end
 
   def destroy
@@ -69,7 +91,8 @@ class TasksController < ApplicationController
       :due_date,
       :estimated_minutes,
       :priority,
-      :status
+      :status,
+      :lock_version
     )
   end
 end

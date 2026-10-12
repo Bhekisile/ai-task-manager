@@ -13,7 +13,64 @@
   </div>
 <% end %>
 
+<% if flash[:alert] %>
+  <div class="alert alert-warning" role="alert">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<% if @submitted_task_changes.present? %>
+  <div class="alert alert-warning" role="alert">
+    <h3>Your submitted changes</h3>
+
+    <p>
+      These are the values you tried to save.
+      The form below contains the latest saved values.
+      Review both before submitting again.
+    </p>
+
+    <ul>
+      <% @submitted_task_changes.each do |attribute, submitted_value| %>
+        <% latest_value = @task.public_send(attribute) %>
+
+        <% if submitted_value.to_s != latest_value.to_s %>
+          <li>
+            <strong>Latest saved <%= attribute.humanize %>:</strong>
+            <%= latest_value.presence || "(blank)" %>
+
+            <div>
+              <strong>Your submitted <%= attribute.humanize %>:</strong>
+              <%= submitted_value.presence || "(blank)" %>
+            </div>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= link_to "Keep latest version",
+            [@project, @task],
+            class: "btn btn-secondary" %>
+
+<% if @submitted_task_changes.present? %>
+  <div>
+    <%= form_with model: [@project, @task] do |form| %>
+      <%= form.hidden_field :lock_version %>
+
+      <% @submitted_task_changes.each do |attribute, value| %>
+        <%= form.hidden_field attribute, value: value %>
+      <% end %>
+
+      <%= form.submit "Review and apply my changes",
+                      class: "btn btn-primary" %>
+    <% end %>
+  </div>
+<% end %>
+
 <%= form_with model: [@project, @task] do |form| %>
+  <%= form.hidden_field :lock_version %>
+
   <div>
     <%= form.label :title %><br>
     <%= form.text_field :title %>
