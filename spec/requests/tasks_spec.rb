@@ -133,5 +133,82 @@ RSpec.describe "Tasks", type: :request do
       expect(response.body).to include('name="task[lock_version]"')
       expect(response.body).to include('value="1"')
     end
+
+    it "denies an authenticated user who does not own the project" do
+      sign_in user
+
+      # Create a different owner and their project.
+      other_user = User.create!(
+        email: "other-owner@example.com",
+        password: "Password123!",
+        role: :member
+      )
+
+      other_project = Project.create!(
+        name: "Other User's Project",
+        user: other_user
+      )
+
+      other_task = other_project.tasks.create!(
+        title: "Private task",
+        priority: :medium,
+        status: :todo
+      )
+
+      # Attempt to update the other user's task.
+      patch project_task_path(other_project, other_task), params: {
+        task: {
+          title: "Unauthorized change",
+          lock_version: 0
+        }
+      }
+
+      # The request must be denied.
+      expect(response).to have_http_status(:redirect)
+      expect(response).to redirect_to(projects_path)
+      expect(flash[:alert]).to eq(
+        "You do not have permission to perform this action."
+      )
+
+      # The task must remain unchanged.
+      expect(other_task.reload.title).to eq("Private task")
+      expect(other_task.lock_version).to eq(0)
+    end
+
+    it "redirects an unauthenticated visitor to sign in without changing the task" do
+      # Arrange: create a task owned by a user.
+      owner = User.create!(
+        email: "task-owner@example.com",
+        password: "Password123!",
+        role: :member
+      )
+
+      project = Project.create!(
+        name: "Protected Project",
+        user: owner
+      )
+
+      task = project.tasks.create!(
+        title: "Private task",
+        priority: :medium,
+        status: :todo
+      )
+
+      # Act: send a PATCH request without signing in.
+      patch project_task_path(project, task), params: {
+        task: {
+          title: "Unauthorized change",
+          lock_version: 0
+        }
+      }
+
+      # Assert: Devise redirects the visitor to sign in.
+      expect(response).to have_http_status(:redirect)
+      expect(response).to redirect_to(new_user_session_path)
+
+      # The task must remain unchanged.
+      expect(task.reload.title).to eq("Private task")
+      expect(task.lock_version).to eq(0)
+    end
   end
 end
