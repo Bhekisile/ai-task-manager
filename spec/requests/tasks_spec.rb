@@ -210,5 +210,53 @@ RSpec.describe "Tasks", type: :request do
       expect(task.reload.title).to eq("Private task")
       expect(task.lock_version).to eq(0)
     end
+
+    it "does not update a task through the wrong project" do
+      # Arrange: create two separate owners and projects.
+      owner_a = User.create!(
+        email: "owner-a@example.com",
+        password: "Password123!",
+        role: :member
+      )
+
+      owner_b = User.create!(
+        email: "owner-b@example.com",
+        password: "Password123!",
+        role: :member
+      )
+
+      project_a = Project.create!(
+        name: "Project A",
+        user: owner_a
+      )
+
+      project_b = Project.create!(
+        name: "Project B",
+        user: owner_b
+      )
+
+      task_b = project_b.tasks.create!(
+        title: "Task belonging to Project B",
+        priority: :medium,
+        status: :todo
+      )
+
+      sign_in owner_a
+
+      # Act: access Project B's task through Project A's URL.
+      patch project_task_path(project_a, task_b), params: {
+        task: {
+          title: "Unauthorized change",
+          lock_version: 0
+        }
+      }
+
+      # Assert: the nested association cannot find the task.
+      expect(response).to have_http_status(:not_found)
+
+      # The task must remain unchanged.
+      expect(task_b.reload.title).to eq("Task belonging to Project B")
+      expect(task_b.lock_version).to eq(0)
+    end
   end
 end
