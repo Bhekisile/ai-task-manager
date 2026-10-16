@@ -33,9 +33,9 @@ module ActiveSupport
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-    # fixtures :all
-
-    # Add more helper methods to be used by all tests here...
+    # Tests create records explicitly using TestDataHelpers.
+    # Automatic YAML fixture loading is disabled because Rails' bulk
+    # fixture loader cannot disable PostgreSQL's system triggers
+    # with the current test database role.
   end
 end
